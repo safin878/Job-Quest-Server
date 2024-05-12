@@ -37,6 +37,7 @@ async function run() {
   try {
     //Collection
     const jobsCollection = client.db("JobQuest").collection("AddJobs");
+    const AppliedCollection = client.db("JobQuest").collection("AppliedJobs");
 
     //Job Add Api
     app.post("/AddJobs", async (req, res) => {
@@ -57,6 +58,20 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await jobsCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Save Data to Database
+    app.post("/AppliedJobs", async (req, res) => {
+      const AppliedData = req.body;
+      const result = await AppliedCollection.insertOne(AppliedData);
+      res.send(result);
+    });
+    // MyJob Get By Email
+    app.get("/MyJob/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { "buyer.email": email };
+      const result = await jobsCollection.find(query).toArray();
       res.send(result);
     });
 
