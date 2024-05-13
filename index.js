@@ -99,6 +99,33 @@ async function run() {
       res.send(result);
     });
 
+    //Search Jobs collection
+    // app.get("/SearchJobs", async (req, res) => {
+    //   const search = req.query.search;
+    //   let query = {
+    //     job_title: { $regex: search, options: "i" },
+    //   };
+    //   const options = {};
+    //   const result = await jobsCollection.find(query, options).toArray();
+    //   res.send(result);
+    // });
+
+    app.get("/SearchJobs", async (req, res) => {
+      const search = req.query.search;
+
+      if (typeof search !== "string") {
+        return res.status(400).send("Search parameter is missing or invalid.");
+      }
+      let query = {
+        job_title: { $regex: search, $options: "i" }, // changed 'options' to '$options'
+      };
+      const options = {};
+      const result = await jobsCollection.find(query, options).toArray();
+      res.send(result);
+    });
+
+    //Search Jobs collection by single id
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
