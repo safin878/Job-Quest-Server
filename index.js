@@ -75,6 +75,20 @@ async function run() {
       console.log(UpdateCount);
       res.send(result);
     });
+
+    // Applied Jobs Get
+    app.get("/AppliedJobs", async (req, res) => {
+      const filter = req.query.filter;
+      console.log(filter);
+      let query = {};
+      if (filter)
+        query = {
+          job_category: filter,
+        };
+      const result = await AppliedCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // MyJob Get By Email
     app.get("/MyJob/:email", async (req, res) => {
       const email = req.params.email;
