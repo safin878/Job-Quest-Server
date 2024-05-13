@@ -65,6 +65,14 @@ async function run() {
     app.post("/AppliedJobs", async (req, res) => {
       const AppliedData = req.body;
       const result = await AppliedCollection.insertOne(AppliedData);
+      const updateDoc = {
+        $inc: {
+          job_applicants: 1,
+        },
+      };
+      const JobQurey = { _id: new ObjectId(AppliedData.JobId) };
+      const UpdateCount = await jobsCollection.updateOne(JobQurey, updateDoc);
+      console.log(UpdateCount);
       res.send(result);
     });
     // MyJob Get By Email
