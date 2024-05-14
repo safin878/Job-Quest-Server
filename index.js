@@ -39,6 +39,19 @@ async function run() {
     const jobsCollection = client.db("JobQuest").collection("AddJobs");
     const AppliedCollection = client.db("JobQuest").collection("AppliedJobs");
 
+    // jwt Create
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.SECRET_KEY, { expiresIn: "1d" });
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV == "production",
+          sameSite: process.env.NODE_ENV == "production" ? "none" : "strict",
+        })
+        .send({ success: true });
+    });
+    // clear token of log out
     //Job Add Api
     app.post("/AddJobs", async (req, res) => {
       const AddJobData = req.body;
