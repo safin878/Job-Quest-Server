@@ -7,18 +7,25 @@ require("dotenv").config();
 const port = process.env.PORT || 5000;
 const app = express();
 
-const corsOptions = {
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "https://jobquest-c5a28.web.app",
-    "https://jobquest-c5a28.firebaseapp.com",
-  ],
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
+// const corsOptions = {
+//   origin: [
+//     "http://localhost:5173",
+//     "http://localhost:5174",
+//     "https://jobquest-c5a28.web.app",
+//     "https://jobquest-c5a28.firebaseapp.com",
+//   ],
+//   credentials: true,
+//   optionsSuccessStatus: 200,
+// };
 
-app.use(cors(corsOptions));
+const corsConfig = {
+  origin: "*",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+};
+app.use(cors(corsConfig));
+
+// app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -122,7 +129,7 @@ async function run() {
     });
 
     // Applied Jobs Get
-    app.get("/AppliedJobs", verifyJwt, async (req, res) => {
+    app.get("/AppliedJobs", async (req, res) => {
       const { filter, user } = req.query;
       let query = {};
       if (filter)
@@ -140,13 +147,13 @@ async function run() {
     });
 
     // MyJob Get By Email
-    app.get("/MyJob/:email", verifyJwt, async (req, res) => {
-      const tokenEmail = req.user.email;
+    app.get("/MyJob/:email", async (req, res) => {
+      // const tokenEmail = req.user.email;
       const email = req.params.email;
 
-      if (tokenEmail !== email) {
-        return res.status(403).send({ message: " Forbidden access denied" });
-      }
+      // if (tokenEmail !== email) {
+      //   return res.status(403).send({ message: " Forbidden access denied" });
+      // }
 
       const query = { "buyer.email": email };
       const result = await jobsCollection.find(query).toArray();
